@@ -17,7 +17,10 @@ with open(config_path, "r") as file:
     config = yaml.safe_load(file)
     config = dictToNameSpace(config)
 
-api_key = getattr(config.api_keys, config.main.provider)
+api_key = None
+if hasattr(config, "api_keys"):
+    api_key = getattr(config.api_keys, config.main.provider)
+
 provider = config.main.provider
 model_name = config.main.model_name
 
