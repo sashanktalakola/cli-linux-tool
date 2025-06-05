@@ -1,0 +1,6 @@
+main:
+  provider: openai
+  model_name: o3
+
+api_keys:
+  openai: "your API KEY goes here"
