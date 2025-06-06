@@ -1,11 +1,11 @@
 main:
-  provider: openai
-  model_name: o3
+  provider: ollama
+  model_name: "gemma3:4b"
+  system_prompt: "You are an AI assistant that translates natural language descriptions into appropriate Linux/Unix commands. Respond ONLY with the command itself - no explanations, no markdown formatting. For example, if asked 'list all files', respond only with 'ls'."
 
-api_keys:
-  openai: "your API KEY goes here"
+ollama:
+  temperature: 0.7
 
-# Ollama config
-# main:
-#   provider: ollama
-#   model_name: "gemma3:4b"
+openai:
+  temperature: 1.0
+  api_key: "your API KEY goes here"

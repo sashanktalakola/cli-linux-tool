@@ -4,7 +4,7 @@ import os
 import yaml
 import sys
 import subprocess
-from utils import dictToNameSpace
+from utils import dictToNameSpace, getAPIKey
 
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import SystemMessage, HumanMessage
@@ -18,30 +18,38 @@ def main():
         config = yaml.safe_load(file)
         config = dictToNameSpace(config)
 
-    api_key = None
-    if hasattr(config, "api_keys"):
-        api_key = getattr(config.api_keys, config.main.provider)
+    api_key = getAPIKey(config)
 
     provider = config.main.provider
     model_name = config.main.model_name
+    provider_config = getattr(config, config.main.provider)
 
-    llm = init_chat_model(
-        model_provider=provider,
-        model=model_name,
-        api_key=api_key,
-        temperature=1.0
-    )
+    if provider == "ollama":
+        llm = init_chat_model(
+            model_provider=provider,
+            model=model_name,
+            base_url=provider_config.base_url,
+            temperature=1.0
+        )
+
+    else:
+        llm = init_chat_model(
+            model_provider=provider,
+            model=model_name,
+            api_key=api_key,
+            temperature=1.0
+        )
 
     user_query = " ".join(sys.argv[1:])
     messages = [
-        SystemMessage(content="You are an AI assistant that translates natural language descriptions into appropriate Linux/Unix commands. Respond ONLY with the command itself - no explanations, no markdown formatting. For example, if asked 'list all files', respond only with 'ls'."),
+        SystemMessage(content=config.main.system_prompt),
         HumanMessage(content=user_query)
     ]
 
     response = llm.invoke(messages)
-    command = response.content
+    command = response.content.strip()
 
-    print(f"\033[1;32mCommand: {command}\033[0m")
+    print(f"\033[1;32mCommand: {command}\033[0m\n")
     confirm = input("Execute this command? [y/N]: ").lower().strip()
 
     if confirm.lower() == "y":
