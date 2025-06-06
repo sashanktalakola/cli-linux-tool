@@ -5,6 +5,7 @@ main:
 
 ollama:
   temperature: 0.7
+  base_url: "http://localhost:11434"
 
 openai:
   temperature: 1.0

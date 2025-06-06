@@ -29,7 +29,7 @@ def main():
             model_provider=provider,
             model=model_name,
             base_url=provider_config.base_url,
-            temperature=1.0
+            temperature=provider_config.temperature
         )
 
     else:
@@ -37,7 +37,7 @@ def main():
             model_provider=provider,
             model=model_name,
             api_key=api_key,
-            temperature=1.0
+            temperature=provider_config.temperature
         )
 
     user_query = " ".join(sys.argv[1:])
