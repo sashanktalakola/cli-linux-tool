@@ -2,22 +2,27 @@
 
 import os
 import yaml
-import sys
 import subprocess
 from utils import dictToNameSpace, getAPIKey
+from args import setup_parser, over_ride_config
 
 from langchain.chat_models import init_chat_model
 from langchain_core.messages import SystemMessage, HumanMessage
 
 
 def main():
+
+    args = setup_parser()
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    config_path = os.path.join(script_dir, 'config.yaml')
+    config_file = "config.yaml" if args.config is None else args.config
+    config_path = os.path.join(script_dir, config_file)
 
     with open(config_path, "r") as file:
         config = yaml.safe_load(file)
         config = dictToNameSpace(config)
 
+    config = over_ride_config(config, args)
     api_key = getAPIKey(config)
 
     provider = config.main.provider
@@ -40,7 +45,7 @@ def main():
             temperature=provider_config.temperature
         )
 
-    user_query = " ".join(sys.argv[1:])
+    user_query = " ".join(args.message)
     messages = [
         SystemMessage(content=config.main.system_prompt),
         HumanMessage(content=user_query)
