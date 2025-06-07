@@ -19,6 +19,26 @@ Use the `/ai` command followed by a description of what you want to accomplish:
 /ai create a new user named 'developer'
 ```
 
+### Configuration Override
+You can override the default configuration using named arguments:
+
+```bash
+# Use a different provider and model
+/ai --provider openai --model gpt-4 "analyze the log file for errors"
+
+# Adjust creativity level
+/ai --temperature 0.8 "write a creative bash script to organize my photos"
+
+# Use a custom configuration file
+/ai --config ~/my-ai-config.yaml "setup nginx with SSL certificates"
+
+# Use a different system prompt for specialized tasks
+/ai --system-prompt "You are a security expert" "audit this server configuration"
+
+# Combine multiple overrides
+/ai --provider anthropic --model claude-3-sonnet --temperature 0.2 "optimize this database query"
+```
+
 ## Example
 ```bash
 $ /ai list all running docker containers
@@ -32,7 +52,6 @@ abc123def456   nginx     ...       ...       ...       ...       webserver
 
 ## Installation
 ```bash
-
 git clone https://github.com/sashanktalakola/cli-linux-tool.git
 cd cli-linux-tool
 
@@ -78,3 +97,19 @@ source ~/.zshrc
 ```
 
 Note for Bash users: If you're using Bash instead of Zsh, add the same configuration to your `~/.bashrc` file.
+
+## Configuration Format
+```yaml
+main:
+  provider: ollama
+  model_name: "gemma3:4b"
+  system_prompt: "You are an AI assistant that translates natural language descriptions into appropriate Linux/Unix commands. Respond ONLY with the command itself - no explanations, no markdown formatting. For example, if asked 'list all files', respond only with 'ls'."
+
+ollama:
+  temperature: 0.7
+  base_url: "http://localhost:11434"
+
+openai:
+  temperature: 1.0
+  api_key: "your API KEY goes here"
+```
